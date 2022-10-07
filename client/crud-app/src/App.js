@@ -25,13 +25,44 @@ function App() {
     });
   };
 
+  const updateEmployeeWage = (id) => {
+    Axios.put("http://localhost:3001/update", { wage: newWage, id: id }).then(
+      (response) => {
+        setEmployeeList(
+          employeeList.map((val) => {
+            return val.id == id
+              ? {
+                  id: val.id,
+                  name: val.name,
+                  country: val.country,
+                  age: val.age,
+                  position: val.position,
+                  wage: newWage,
+                }
+              : val;
+          })
+        );
+      }
+    );
+  };
+
   const getEmployees = () => {
     Axios.get("http://localhost:3001/employees", {
     }).then((response) => {
       console.log(response);
       setEmployeeList(response.data);
     });
-  }
+  };
+
+  const deleteEmployee = (id) => {
+    Axios.delete(`http://localhost:3001/delete/${id}`).then((response) => {
+      setEmployeeList(
+        employeeList.filter((val) => {
+          return val.id != id;
+        })
+      );
+    });
+  };
 
   return (
     <div className="App">
@@ -60,7 +91,8 @@ function App() {
               </div>
               <div>
                 <input type="text" placeholder='2000...' onChange={(event) => setNewWage(event.target.value)}></input>
-                <button>Update</button>
+                <button onClick={()=>{updateEmployeeWage(val.id)}}>Update</button>
+                <button onClick={()=>{deleteEmployee(val.id)}}>Delete</button>
               </div>
             </div>
         })}
